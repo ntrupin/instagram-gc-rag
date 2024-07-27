@@ -1,0 +1,5 @@
+env/
+*.chromadb/
+*.pkl
+.env
+.DS_Store
