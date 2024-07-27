@@ -81,7 +81,7 @@ def make_docs(df: pd.DataFrame) -> tuple[list[str], list[dict[str, Any]], list[s
 
     return df["formatted"].tolist(), meta, ids
 
-def make_client(name) -> tuple[chromadb.PersistentClient, chromadb.Collection]:
+def make_client(name: str = GC_NAME) -> tuple[chromadb.PersistentClient, chromadb.Collection]:
     """
     make chromadb client from given db. inits db with new docs if does not
     exist. returns client and primary collection.
@@ -91,7 +91,7 @@ def make_client(name) -> tuple[chromadb.PersistentClient, chromadb.Collection]:
     client = chromadb.PersistentClient(path=dbname)
     collection = client.get_or_create_collection(name=f"{name}_collection")
     if collection.count() == 0:
-        df = load_gc(GC_DIR, name)
+        df = load_gc(GC_DIR, GC_NAME)
         docs, metas, ids = make_docs(df)
         collection.add(
             documents=docs, metadatas=metas, ids=ids
@@ -146,7 +146,6 @@ def query_groq(prompt, documents) -> str:
 
     return completion.choices[0].message.content
 
-df = load_gc(GC_DIR, GC_NAME)
 db, collection = make_client(GC_NAME)
 
 if __name__ == "__main__":
